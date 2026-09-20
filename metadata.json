@@ -1,6 +1,6 @@
 {
   "name": "AGRICARL PERÚ S.A.C.",
-  "description": "AGRICARL PERÚ S.A.C. - Conectando al agricultor con el mercado. Suministro de materias primas de la Amazonía (Cacao, Sacha Inchi, Aguaje Deshidratado, Coco) y gestión de recaudación financiera COBRAGOOD.",
+  "description": "AGRICARL PERÚ S.A.C. - Conectando al agricultor con el mercado. Suministro de materias primas de la Amazonía (Cacao, Sacha Inchi, Aguaje Deshidratado, Coco) y soluciones de recaudación AgriCobros.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
