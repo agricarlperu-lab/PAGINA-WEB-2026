@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Metallic Gear Gradients -->
+    <linearGradient id="gearGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="gearHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Orchid Petals Gradients -->
+    <radialGradient id="orchidCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fdf2f8" />
+      <stop offset="45%" stop-color="#f472b6" />
+      <stop offset="85%" stop-color="#be185d" />
+      <stop offset="100%" stop-color="#831843" />
+    </radialGradient>
+    <linearGradient id="petalTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbcfe8" />
+      <stop offset="60%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#9d174d" />
+    </linearGradient>
+    <linearGradient id="petalSide" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f472b6" />
+      <stop offset="70%" stop-color="#db2777" />
+      <stop offset="100%" stop-color="#831843" />
+    </linearGradient>
+    <linearGradient id="lipCenter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#f43f5e" />
+      <stop offset="100%" stop-color="#881337" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="gearShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#090d16" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Industrial Gear with Orchid Emblem (Centrado en x=250, y=190) -->
+  <g id="gearEmblem" transform="translate(250, 185)" filter="url(#gearShadow)">
+    <!-- 10 Cogs Gear Path -->
+    <path d="
+      M 0,-140
+      L 22,-140 L 26,-118
+      L 63,-106 L 80,-120 L 98,-106 L 90,-86
+      L 118,-63 L 136,-67 L 142,-44 L 122,-30
+      L 132,10 L 152,18 L 148,42 L 126,44
+      L 118,84 L 132,102 L 118,120 L 98,110
+      L 64,124 L 60,146 L 36,150 L 28,128
+      L -12,130 L -22,150 L -46,146 L -48,124
+      L -84,112 L -102,124 L -120,108 L -110,88
+      L -126,50 L -148,46 L -150,22 L -130,12
+      L -124,-28 L -144,-42 L -136,-64 L -116,-62
+      L -92,-88 L -98,-110 L -80,-122 L -64,-108
+      L -26,-120 L -22,-140
+      Z"
+      fill="url(#gearGrad)"
+      stroke="url(#gearHighlight)"
+      stroke-width="3"
+    />
+
+    <!-- Inner Gear Rim Bevel -->
+    <circle cx="0" cy="5" r="95" fill="#0f172a" stroke="#334155" stroke-width="4" />
+    <circle cx="0" cy="5" r="86" fill="#182030" />
+
+    <!-- Blooming Amazonian Orchid (Flor de Orquídea de San Martín) -->
+    <g id="orchidFlower" transform="translate(0, 8)">
+      <!-- Dorsal (Top) Sepal -->
+      <path d="M 0,-62 C -24,-45 -22,-18 0,0 C 22,-18 24,-45 0,-62 Z" fill="url(#petalTop)" stroke="#9d174d" stroke-width="1.2" />
+      <path d="M 0,-56 Q 0,-20 0,-4" stroke="#fdf2f8" stroke-width="1.5" opacity="0.6" fill="none" />
+
+      <!-- Lower Lateral Sepals -->
+      <path d="M -8,-5 C -45,15 -52,48 -18,65 C -6,52 -12,25 -8,-5 Z" fill="url(#petalSide)" opacity="0.95" stroke="#831843" stroke-width="1" />
+      <path d="M 8,-5 C 45,15 52,48 18,65 C 6,52 12,25 8,-5 Z" fill="url(#petalSide)" opacity="0.95" stroke="#831843" stroke-width="1" />
+
+      <!-- Left Main Petal (Wide ruffled) -->
+      <path d="M -5,-12 C -42,-42 -75,-25 -72,8 C -70,35 -40,32 -8,6 Z" fill="url(#orchidCenter)" stroke="#be185d" stroke-width="1.5" />
+      <path d="M -22,-10 C -48,-18 -58,2 -35,16" stroke="#fbcfe8" stroke-width="2" opacity="0.7" fill="none" />
+
+      <!-- Right Main Petal (Wide ruffled) -->
+      <path d="M 5,-12 C 42,-42 75,-25 72,8 C 70,35 40,32 8,6 Z" fill="url(#orchidCenter)" stroke="#be185d" stroke-width="1.5" />
+      <path d="M 22,-10 C 48,-18 58,2 35,16" stroke="#fbcfe8" stroke-width="2" opacity="0.7" fill="none" />
+
+      <!-- Labellum / Lip (Central Orchid Throat) -->
+      <path d="M -18,2 C -30,22 -22,46 0,55 C 22,46 30,22 18,2 C 10,-4 -10,-4 -18,2 Z" fill="url(#lipCenter)" stroke="#881337" stroke-width="1.5" />
+
+      <!-- Orchid Column & Yellow Anther Cap -->
+      <ellipse cx="0" cy="12" rx="7" ry="11" fill="#fef08a" stroke="#d97706" stroke-width="1.2" />
+      <circle cx="0" cy="8" r="4.5" fill="#f59e0b" />
+      <circle cx="0" cy="18" r="2.5" fill="#e11d48" />
+    </g>
+  </g>
+
+  <!-- Typography under Logo: AGRICARL PERU S.A.C. & (RUC:20611291001) -->
+  <g id="brandText">
+    <text x="250" y="380" 
+          font-family="system-ui, -apple-system, 'Montserrat', 'Inter', sans-serif" 
+          font-size="28" 
+          font-weight="900" 
+          letter-spacing="2" 
+          fill="#0f172a" 
+          text-anchor="middle">
+      AGRICARL PERU S.A.C.
+    </text>
+
+    <text x="250" y="415" 
+          font-family="'Courier New', Courier, monospace, monospace" 
+          font-size="20" 
+          font-weight="800" 
+          letter-spacing="2" 
+          fill="#334155" 
+          text-anchor="middle">
+      (RUC:20611291001)
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* High-Status Urban & Architectural Corporate Palette */
+  --color-brand-green-dark: #072518;       /* Deep Architectural Forest Slate */
+  --color-brand-green: #0d7a46;            /* Urban Premium Emerald Green */
+  --color-brand-green-light: #f0fdf4;      /* Clean Concrete Mint Off-White */
+  --color-brand-lavender: #f1f5f9;         /* Sophisticated Cool Grey / Slate Concrete */
+  --color-brand-lavender-accent: #64748b;  /* Slate Muted Architectural Blue */
+  --color-brand-pink: #fdf2f8;             /* Delicate Organic Soft Pink */
+  --color-brand-pink-accent: #ec4899;      /* Elite Orchid Flower Accent Pink */
+  --color-brand-dark: #090d16;             /* Urban Basalt / Deep Architectural Graphite */
+  --color-brand-light: #f8fafc;            /* Clean Architectural Concrete / Limestone White */
+  --color-brand-steel: #e2e8f0;            /* Precision Anodized Steel Border */
+  --color-brand-concrete: #94a3b8;         /* Urban Muted Slate Concrete */
+  --color-brand-slate-stone: #f4f6f8;      /* Travertine / Architectural Stone Tint */
+  --color-brand-graphite: #0f172a;         /* Architectural Structural Graphite */
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-brand-light);
+}
+
+/* Urban & Architectural Blueprint Grid Overlays */
+.bg-architectural-grid {
+  background-image: linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.bg-architectural-grid-dense {
+  background-image: linear-gradient(to right, rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(15, 23, 42, 0.025) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.bg-architectural-grid-dark {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.bg-architectural-dots {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-architectural-dots-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Backward-compatible Grid Overlays */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(13, 122, 70, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(13, 122, 70, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.bg-grid-pattern-dark {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+/* Architectural Volume Panels */
+.architectural-panel {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.02);
+}
+
+.architectural-panel-dark {
+  background: linear-gradient(180deg, #0f172a 0%, #090d16 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Elite Glassmorphism Effect */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.glass-panel-dark {
+  background: rgba(9, 13, 22, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brand-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-green-dark);
+  border: 2px solid var(--color-brand-light);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-green);
+}
+
+/* Mascot & Special Keyframe Animations */
+@keyframes bodyFloat { 
+  0%, 100% { transform: translateY(0) rotate(-0.5deg); } 
+  50% { transform: translateY(-15px) rotate(0.5deg); } 
+}
+@keyframes armSwingL {
+  0%, 100% { transform: rotate(-20deg); }
+  50% { transform: rotate(10deg); }
+}
+@keyframes armSwingR {
+  0%, 100% { transform: rotate(20deg); }
+  50% { transform: rotate(-10deg); }
+}
+@keyframes armSwingL2 {
+  0%, 100% { transform: rotate(-25deg); }
+  50% { transform: rotate(15deg); }
+}
+@keyframes armSwingR2 {
+  0%, 100% { transform: rotate(25deg); }
+  50% { transform: rotate(-15deg); }
+}
+@keyframes walkCycleL {
+  0%, 100% { transform: translateY(0) rotate(5deg); }
+  50% { transform: translateY(-5px) rotate(-10deg); }
+}
+@keyframes walkCycleR {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-5px) rotate(10deg); }
+}
+@keyframes walkCycleL2 {
+  0%, 100% { transform: translateY(0) rotate(10deg); }
+  50% { transform: translateY(-10px) rotate(-15deg); }
+}
+@keyframes walkCycleR2 {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-10px) rotate(15deg); }
+}
+@keyframes eyesBlink {
+  0%, 45%, 55%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(1deg); }
+}
+@keyframes rotateGear {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes slideUp {
+  0% { transform: translateY(100%); opacity: 0; }
+  10% { transform: translateY(0); opacity: 1; }
+  90% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
+
+.anim-body { animation: bodyFloat 5s infinite ease-in-out; transform-origin: center bottom; }
+.anim-arm-l { animation: armSwingL 2.8s infinite ease-in-out; transform-origin: 100px 320px; }
+.anim-arm-r { animation: armSwingR 2.8s infinite ease-in-out; transform-origin: 200px 320px; }
+.anim-arm-l2 { animation: armSwingL2 2.8s infinite ease-in-out; transform-origin: 100px 240px; }
+.anim-arm-r2 { animation: armSwingR2 2.8s infinite ease-in-out; transform-origin: 200px 240px; }
+.anim-leg-l { animation: walkCycleL 1.6s infinite ease-in-out; transform-origin: 125px 500px; }
+.anim-leg-r { animation: walkCycleR 1.6s infinite ease-in-out; transform-origin: 175px 500px; }
+.anim-leg-l2 { animation: walkCycleL2 1.6s infinite ease-in-out; transform-origin: 125px 450px; }
+.anim-leg-r2 { animation: walkCycleR2 1.6s infinite ease-in-out; transform-origin: 175px 450px; }
+.anim-eyes { animation: eyesBlink 4s infinite ease-in-out; transform-origin: center; }
+.animate-float { animation: floatUp 6s ease-in-out infinite; }
+.animate-gear { animation: rotateGear 7s linear infinite; transform-origin: center; }
+.animate-gear-fast { animation: rotateGear 4s linear infinite; transform-origin: center; }
+.tx-feed-item { animation: slideUp 4s infinite; }
+
+/* Ant Animation Keyframes */
+@keyframes antMarch {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes antBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+.animate-ant-march {
+  animation: antMarch 18s linear infinite;
+}
+.animate-ant-march-slow {
+  animation: antMarch 26s linear infinite;
+}
+.animate-ant-march-fast {
+  animation: antMarch 12s linear infinite;
+}
+.animate-ant-bob {
+  animation: antBob 0.6s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   OPTIMIZACIONES AVANZADAS PARA IMPRESIÓN (PRINT STYLES)
+   Limpia la vista de impresión ocultando elementos flotantes, botones de
+   edición, menús dinámicos y garantizando cortes de página profesionales.
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 12mm 15mm;
+  }
+
+  /* Asegurar fidelidad cromática exacta en logos, insignias y fondos corporativos */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body,
+  #root {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #0f172a !important;
+    width: 100% !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Desactivar elementos con posicionamiento fijo o pegajoso para evitar solapamientos */
+  .fixed,
+  .sticky,
+  [class*="fixed"],
+  [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* OCULTAR ELEMENTOS INNECESARIOS EN IMPRESIÓN:
+     - Botones flotantes (WhatsApp, Panel de Gestión)
+     - Menús de navegación y botones móviles
+     - Botones y controles de edición de imágenes, logos y textos
+     - Modales, diálogos y ventanas emergentes
+     - Controles interactivos de mapas (zoom, modos, copiar)
+     - Flechas y botones de carrusel */
+  .print\:hidden,
+  nav,
+  #nav-desktop,
+  #mobile-menu-toggle,
+  #mobile-navigation-panel,
+  a[href*="wa.me"],
+  a[href*="whatsapp"],
+  button[type="submit"],
+  button[title*="Cambiar"],
+  button[title*="Editar"],
+  button[title*="Gestionar"],
+  button[title*="Personalizar"],
+  button[title*="Logo"],
+  button[title*="Foto"],
+  label[title*="Cambiar"],
+  .group\/edit,
+  .group\/media button,
+  .group\/media div.absolute,
+  input[type="file"],
+  [role="dialog"],
+  [aria-modal="true"],
+  .animate-spin,
+  .animate-bounce,
+  .animate-ping,
+  .animate-pulse {
+    display: none !important;
+  }
+
+  /* Ocultar sombras pesadas que oscurecen la impresión */
+  * {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Cabecera limpia tipo membrete corporativo */
+  header#header {
+    height: auto !important;
+    padding: 8px 0 16px 0 !important;
+    border-bottom: 2px solid #0d7a46 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Control inteligente de saltos de página (evitar que tarjetas o bloques se corten a la mitad) */
+  article,
+  section,
+  figure,
+  .rounded-3xl,
+  .rounded-2xl,
+  .shadow-xl,
+  .grid > div {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Garantizar que textos mantengan legibilidad óptima sobre fondos */
+  .text-white {
+    color: #ffffff !important;
+  }
+
+  /* Ajuste de enlaces */
+  a {
+    text-decoration: none !important;
+  }
+
+  /* Enlaces de pie de página limpios */
+  footer {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border-top: 2px solid #092e1e !important;
+    margin-top: 30px !important;
+    padding-top: 20px !important;
+  }
+}
+
+
+

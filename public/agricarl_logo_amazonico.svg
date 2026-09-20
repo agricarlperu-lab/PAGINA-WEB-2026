@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="amazonGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#0d7a46" />
+      <stop offset="100%" stop-color="#092e1e" />
+    </linearGradient>
+    <linearGradient id="goldAmazonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="bgLightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+    <filter id="subtleGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#092e1e" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- Background Circle (Badge format) -->
+  <circle cx="250" cy="250" r="236" fill="url(#bgLightGrad)" stroke="url(#amazonGreenGrad)" stroke-width="8" filter="url(#subtleGlow)" />
+  
+  <!-- Subtle Inner Guide Ring -->
+  <circle cx="250" cy="250" r="218" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6 4" />
+
+  <!-- Central Emblem: Stylized Amazonian Sacha Inchi + Cacao + Palm Curves -->
+  <g transform="translate(250, 185)" id="emblem">
+    <!-- Palm Leaf Arc Left -->
+    <path d="M -110,60 C -125,20 -100,-40 -50,-80 C -65,-30 -60,20 -110,60 Z" fill="#059669" opacity="0.85" />
+    <path d="M -90,40 C -105,10 -85,-35 -40,-70" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Palm Leaf Arc Right -->
+    <path d="M 110,60 C 125,20 100,-40 50,-80 C 65,-30 60,20 110,60 Z" fill="#059669" opacity="0.85" />
+    <path d="M 90,40 C 105,10 85,-35 40,-70" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Sacha Inchi Star Base (Amazonian 5-lobe Geometry) -->
+    <!-- Star Lobe Top -->
+    <path d="M 0,-95 C 22,-65 25,-35 0,-15 C -25,-35 -22,-65 0,-95 Z" fill="url(#amazonGreenGrad)" />
+    <!-- Star Lobe Top Right -->
+    <path d="M 90,-30 C 65,-10 38,-20 15,-2 C 30,-28 60,-45 90,-30 Z" fill="url(#amazonGreenGrad)" />
+    <!-- Star Lobe Bottom Right -->
+    <path d="M 55,75 C 38,50 18,35 0,10 C 25,12 55,40 55,75 Z" fill="url(#amazonGreenGrad)" />
+    <!-- Star Lobe Bottom Left -->
+    <path d="M -55,75 C -38,50 -18,35 0,10 C -25,12 -55,40 -55,75 Z" fill="url(#amazonGreenGrad)" />
+    <!-- Star Lobe Top Left -->
+    <path d="M -90,-30 C -65,-10 -38,-20 -15,-2 C -30,-28 -60,-45 -90,-30 Z" fill="url(#amazonGreenGrad)" />
+
+    <!-- Central Cacao Pod Silhouette with Gold Inlay -->
+    <path d="M 0,-60 C 35,-30 35,30 0,65 C -35,30 -35,-30 0,-60 Z" fill="url(#goldAmazonGrad)" />
+    <!-- Vertical Cacao Segment Lines -->
+    <path d="M 0,-55 C 18,-25 18,25 0,58 C -18,25 -18,-25 0,-55 Z" fill="#ffffff" opacity="0.25" />
+    <line x1="0" y1="-55" x2="0" y2="58" stroke="#78350f" stroke-width="2" opacity="0.4" stroke-linecap="round" />
+
+    <!-- Core Golden Seed / Sun Nucleus -->
+    <circle cx="0" cy="5" r="14" fill="#ffffff" stroke="url(#goldAmazonGrad)" stroke-width="4" />
+    <circle cx="0" cy="5" r="6" fill="#0d7a46" />
+  </g>
+
+  <!-- Elegant Brand Typography -->
+  <g id="typography">
+    <!-- Main Brand Name -->
+    <text x="250" y="340" 
+          font-family="'Montserrat', 'Inter', 'Segoe UI', sans-serif" 
+          font-size="44" 
+          font-weight="900" 
+          letter-spacing="5" 
+          fill="#092e1e" 
+          text-anchor="middle">
+      AGRICARL
+    </text>
+
+    <!-- Subtitle: PERU - S.A.C. -->
+    <text x="250" y="375" 
+          font-family="'Montserrat', 'Inter', 'Segoe UI', sans-serif" 
+          font-size="16" 
+          font-weight="700" 
+          letter-spacing="9" 
+          fill="#0d7a46" 
+          text-anchor="middle">
+      PERÚ · S.A.C.
+    </text>
+
+    <!-- Fine Tagline in Gold -->
+    <text x="250" y="405" 
+          font-family="'Montserrat', 'Inter', 'Segoe UI', sans-serif" 
+          font-size="11" 
+          font-weight="600" 
+          letter-spacing="4" 
+          fill="#b45309" 
+          text-anchor="middle">
+      AGROINDUSTRIA &amp; AMAZONÍA
+    </text>
+
+    <!-- Bottom Decorative Star -->
+    <polygon points="250,422 253,429 261,429 255,433 257,440 250,436 243,440 245,433 239,429 247,429" fill="#0d7a46" />
+  </g>
+</svg>
