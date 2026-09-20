@@ -62,3 +62,18 @@ Para activarlo en tu repositorio de GitHub:
    npm run build
    ```
 
+---
+
+## 🖼️ Manejo de Imágenes y Descarga del Proyecto (ZIP / GitHub)
+
+### ¿Por qué antes no se descargaban las fotos subidas?
+Las fotos subidas directamente desde la interfaz web se almacenaban en la memoria local del navegador (**IndexedDB**). Al descargar el código fuente en archivo ZIP o exportarlo a GitHub, el sistema descargaba únicamente los archivos del disco del proyecto, sin incluir la base de datos interna de tu navegador.
+
+### ✅ Solución implementada:
+1. **Guardado físico automático en disco (`public/uploads/`)**:
+   - Ahora, al subir imágenes o hacer clic en **«Guardar en Archivos del Proyecto»** dentro del panel **Personalizar / Gestor de Medios**, el servidor convierte las fotos automáticamente en archivos físicos reales dentro de la carpeta `public/uploads/` y genera el registro en `public/saved-media.json` y `src/data/savedMedia.json`.
+   - Cuando descargas el archivo **ZIP** o sincronizas con **GitHub**, la carpeta `public/uploads/` y todas tus imágenes estarán **incluidas en la descarga**.
+2. **Botón «Respaldar (.json)» y «Restaurar (.json)»**:
+   - En el panel de **Gestor de Medios**, cuentas con una opción para descargar un archivo de respaldo `.json` con todas tus fotos personalizadas.
+   - Si descargas el proyecto en otra computadora o borras el historial de navegación, simplemente haces clic en **«Restaurar (.json)»** y todas tus imágenes volverán a cargarse de inmediato.
+

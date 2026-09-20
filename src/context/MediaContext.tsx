@@ -63,6 +63,13 @@ interface MediaContextType {
   setIsDrawerOpen: (val: boolean) => void;
   openDrawer: () => void;
   closeDrawer: () => void;
+
+  // Project Disk Persistence & Backups for GitHub / ZIP Download
+  saveToProjectDisk: () => Promise<{ success: boolean; message: string; count: number }>;
+  exportMediaBackup: () => void;
+  importMediaBackup: (jsonContent: string) => Promise<boolean>;
+  isSavingToDisk: boolean;
+  diskSaveStatus: string | null;
 }
 
 const MediaContext = createContext<MediaContextType | null>(null);
@@ -103,9 +110,33 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
 
-  // Hydrate asynchronously from high-capacity IndexedDB on startup
+  const [isSavingToDisk, setIsSavingToDisk] = useState<boolean>(false);
+  const [diskSaveStatus, setDiskSaveStatus] = useState<string | null>(null);
+
+  // Hydrate asynchronously from server disk and high-capacity IndexedDB on startup
   useEffect(() => {
     let isMounted = true;
+
+    // 1. Try to fetch from server or public/saved-media.json
+    fetch('/api/media')
+      .then(res => res.json())
+      .then(serverData => {
+        if (!isMounted) return;
+        if (serverData && serverData.images && Object.keys(serverData.images).length > 0) {
+          setImagesState((prev) => ({ ...serverData.images, ...prev }));
+        }
+        if (serverData && serverData.backgrounds && Object.keys(serverData.backgrounds).length > 0) {
+          setBackgroundsState((prev) => ({ ...serverData.backgrounds, ...prev }));
+        }
+        if (serverData && serverData.fits && Object.keys(serverData.fits).length > 0) {
+          setImageFitsState((prev) => ({ ...serverData.fits, ...prev }));
+        }
+      })
+      .catch((err) => {
+        console.warn('Could not load media from server:', err);
+      });
+
+    // 2. Hydrate from IndexedDB
     loadStoredMedia().then((data) => {
       if (!isMounted) return;
       if (data.images && Object.keys(data.images).length > 0) {
@@ -126,19 +157,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
-  // Edit mode active state (defaults to true so the user immediately sees the edit buttons)
-  const [isEditMode, setIsEditMode] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_EDIT_MODE);
-      return saved !== null ? JSON.parse(saved) : true;
-    } catch {
-      return true;
-    }
-  });
-
-  const [activeItem, setActiveItem] = useState<EditableTarget | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-
   // Sync to IndexedDB (no 5MB limit!) and safe localStorage backup
   useEffect(() => {
     saveAllImagesToStorage(images).catch((err) => {
@@ -157,6 +175,48 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.warn('Could not persist image fits to storage:', err);
     });
   }, [imageFits]);
+
+  // Auto-sync base64 images to project files on server (debounced)
+  useEffect(() => {
+    const hasBase64 = Object.values(images).some(src => typeof src === 'string' && src.startsWith('data:image/')) ||
+      Object.values(backgrounds).some((bg: any) => bg && typeof bg.image === 'string' && bg.image.startsWith('data:image/'));
+
+    if (!hasBase64) return;
+
+    const timer = setTimeout(() => {
+      fetch('/api/media/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images, backgrounds, fits: imageFits })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.images) {
+            setImagesState(data.images);
+            if (data.backgrounds) setBackgroundsState(data.backgrounds);
+            setDiskSaveStatus('¡Fotos sincronizadas como archivos en el proyecto!');
+          }
+        })
+        .catch((err) => {
+          console.warn('Auto-sync to disk warning:', err);
+        });
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [images, backgrounds, imageFits]);
+
+  // Edit mode active state (defaults to true so the user immediately sees the edit buttons)
+  const [isEditMode, setIsEditMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_EDIT_MODE);
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
+  });
+
+  const [activeItem, setActiveItem] = useState<EditableTarget | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -312,6 +372,81 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setActiveItem(null);
   };
 
+  const saveToProjectDisk = async (): Promise<{ success: boolean; message: string; count: number }> => {
+    setIsSavingToDisk(true);
+    setDiskSaveStatus('Guardando fotos en archivos de proyecto (public/uploads)...');
+    try {
+      const res = await fetch('/api/media/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images, backgrounds, fits: imageFits })
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.images) setImagesState(data.images);
+        if (data.backgrounds) setBackgroundsState(data.backgrounds);
+        const count = Object.keys(data.images || {}).length;
+        setDiskSaveStatus(`¡Guardado exitoso! ${count} elementos asegurados en disco.`);
+        return { 
+          success: true, 
+          message: '¡Fotos guardadas permanentemente en archivos locales para GitHub y ZIP!', 
+          count 
+        };
+      } else {
+        throw new Error(data.error || 'Error al guardar');
+      }
+    } catch (err: any) {
+      console.error('Error guardando en disco:', err);
+      setDiskSaveStatus('No se pudo sincronizar con el servidor.');
+      return { success: false, message: err?.message || 'Error de conexión', count: 0 };
+    } finally {
+      setIsSavingToDisk(false);
+    }
+  };
+
+  const exportMediaBackup = () => {
+    const payload = {
+      app: 'AGRICARL PERÚ S.A.C.',
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      images,
+      backgrounds,
+      fits: imageFits
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agricarl-fotos-respaldo-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importMediaBackup = async (jsonContent: string): Promise<boolean> => {
+    try {
+      const parsed = JSON.parse(jsonContent);
+      if (parsed.images && typeof parsed.images === 'object') {
+        setImagesState(prev => ({ ...prev, ...parsed.images }));
+      }
+      if (parsed.backgrounds && typeof parsed.backgrounds === 'object') {
+        setBackgroundsState(prev => ({ ...prev, ...parsed.backgrounds }));
+      }
+      if (parsed.fits && typeof parsed.fits === 'object') {
+        setImageFitsState(prev => ({ ...prev, ...parsed.fits }));
+      }
+      // Save directly to disk after import
+      setTimeout(() => {
+        saveToProjectDisk();
+      }, 500);
+      return true;
+    } catch (err) {
+      console.error('Error importando archivo JSON de medios:', err);
+      return false;
+    }
+  };
+
   return (
     <MediaContext.Provider
       value={{
@@ -337,6 +472,11 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setIsDrawerOpen,
         openDrawer: () => setIsDrawerOpen(true),
         closeDrawer: () => setIsDrawerOpen(false),
+        saveToProjectDisk,
+        exportMediaBackup,
+        importMediaBackup,
+        isSavingToDisk,
+        diskSaveStatus,
       }}
     >
       {children}

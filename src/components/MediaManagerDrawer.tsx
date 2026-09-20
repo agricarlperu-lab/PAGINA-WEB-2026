@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMedia } from '../context/MediaContext';
 import { transformImageUrl } from '../utils/mediaStorage';
 import { 
@@ -12,7 +12,13 @@ import {
   CheckCircle2,
   Edit2,
   Eye,
-  EyeOff
+  EyeOff,
+  Download,
+  Upload,
+  HardDrive,
+  Save,
+  RefreshCw,
+  FolderGit2
 } from 'lucide-react';
 
 interface ManagedMediaItem {
@@ -409,13 +415,54 @@ export const MediaManagerDrawer: React.FC = () => {
     getBackground, 
     openEditor, 
     resetImage, 
-    resetBackground,
+    resetBackground, 
     resetAllMedia, 
     isEditMode, 
-    toggleEditMode 
+    toggleEditMode,
+    saveToProjectDisk,
+    exportMediaBackup,
+    importMediaBackup,
+    isSavingToDisk,
+    diskSaveStatus
   } = useMedia();
 
   const [activeCategory, setActiveCategory] = useState<string>('todos');
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+  const importFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveToDisk = async () => {
+    setSyncFeedback('Guardando archivos en el proyecto...');
+    const result = await saveToProjectDisk();
+    if (result.success) {
+      setSyncFeedback('✅ ¡Archivos guardados en public/uploads/! Ya puedes exportar a GitHub o descargar ZIP con tus fotos.');
+    } else {
+      setSyncFeedback(`⚠️ ${result.message}`);
+    }
+    setTimeout(() => {
+      setSyncFeedback(null);
+    }, 6000);
+  };
+
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        const ok = await importMediaBackup(content);
+        if (ok) {
+          setSyncFeedback('✅ ¡Copia de seguridad restaurada y guardada con éxito!');
+        } else {
+          setSyncFeedback('❌ El archivo seleccionado no tiene un formato válido de fotos.');
+        }
+        setTimeout(() => setSyncFeedback(null), 5000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   if (!isDrawerOpen) return null;
 
@@ -461,6 +508,72 @@ export const MediaManagerDrawer: React.FC = () => {
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Persistencia en Código Fuente / GitHub / Descarga ZIP */}
+        <div className="p-4 bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white border-b border-emerald-800/60 shadow-inner">
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              <FolderGit2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                Guardar Fotos para GitHub / Descargar ZIP
+              </span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              {totalCustomized} modificadas
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-300 leading-relaxed mb-3">
+            Las fotos que subes se guardan directamente como archivos reales en <code className="text-emerald-400 bg-black/40 px-1 py-0.5 rounded font-mono">public/uploads/</code> para que estén incluidas cuando descargues el código o lo envíes a GitHub.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleSaveToDisk}
+              disabled={isSavingToDisk}
+              className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md cursor-pointer disabled:opacity-50"
+            >
+              {isSavingToDisk ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Save className="w-3.5 h-3.5" />
+              )}
+              <span>{isSavingToDisk ? 'Guardando en proyecto...' : 'Guardar en Archivos del Proyecto'}</span>
+            </button>
+
+            <button
+              onClick={exportMediaBackup}
+              className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all border border-white/10 cursor-pointer"
+              title="Descargar copia de seguridad en archivo .json"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Respaldar (.json)</span>
+            </button>
+
+            <button
+              onClick={() => importFileInputRef.current?.click()}
+              className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all border border-white/10 cursor-pointer"
+              title="Restaurar copia de fotos desde un archivo .json"
+            >
+              <Upload className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Restaurar (.json)</span>
+            </button>
+          </div>
+
+          {syncFeedback && (
+            <div className="mt-2.5 p-2 bg-emerald-900/80 border border-emerald-500/50 rounded-lg text-emerald-200 text-xs flex items-center gap-1.5 animate-fadeIn">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>{syncFeedback}</span>
+            </div>
+          )}
+
+          <input 
+            type="file" 
+            ref={importFileInputRef} 
+            accept=".json" 
+            className="hidden" 
+            onChange={handleFileImport} 
+          />
         </div>
 
         {/* Global Controls & Mode Switch */}

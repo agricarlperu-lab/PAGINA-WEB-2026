@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
@@ -21,12 +22,111 @@ interface ContactInquiry {
 const serverInbox: ContactInquiry[] = [];
 const OFFICIAL_EMAIL = process.env.OFFICIAL_CONTACT_EMAIL || 'operaciones@agricarlperu.com';
 
+function saveBase64Image(dataUrl: string, keyPrefix: string): string | null {
+  try {
+    const match = dataUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    if (!match) return null;
+    
+    let ext = match[1].toLowerCase();
+    if (ext === 'jpeg') ext = 'jpg';
+    if (ext.includes('svg')) ext = 'svg';
+    if (ext === 'x-icon') ext = 'ico';
+
+    const base64Data = match[2];
+    const safePrefix = keyPrefix.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `${safePrefix}-${Date.now()}.${ext}`;
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const filepath = path.join(uploadsDir, filename);
+    fs.writeFileSync(filepath, Buffer.from(base64Data, 'base64'));
+    return `./uploads/${filename}`;
+  } catch (err) {
+    console.error('Error guardando imagen en disco:', err);
+    return null;
+  }
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+  // Media persistence endpoints - Ensures uploaded images exist as real files for GitHub & ZIP download
+  app.get('/api/media', (_req, res) => {
+    try {
+      const publicPath = path.join(process.cwd(), 'public', 'saved-media.json');
+      const srcPath = path.join(process.cwd(), 'src', 'data', 'savedMedia.json');
+      const targetPath = fs.existsSync(publicPath) ? publicPath : fs.existsSync(srcPath) ? srcPath : null;
+
+      if (targetPath) {
+        const raw = fs.readFileSync(targetPath, 'utf-8');
+        return res.json(JSON.parse(raw));
+      }
+      return res.json({ images: {}, backgrounds: {}, fits: {} });
+    } catch (err) {
+      console.error('Error leyendo media:', err);
+      return res.json({ images: {}, backgrounds: {}, fits: {} });
+    }
+  });
+
+  app.post('/api/media/save', (req, res) => {
+    try {
+      const { images = {}, backgrounds = {}, fits = {} } = req.body;
+      const updatedImages: Record<string, string> = { ...images };
+      const updatedBackgrounds: Record<string, any> = { ...backgrounds };
+
+      // Convert any base64 images into physical files inside public/uploads/
+      for (const [key, src] of Object.entries(updatedImages)) {
+        if (typeof src === 'string' && src.startsWith('data:image/')) {
+          const filePath = saveBase64Image(src, key);
+          if (filePath) {
+            updatedImages[key] = filePath;
+          }
+        }
+      }
+
+      for (const [key, bgConfig] of Object.entries(updatedBackgrounds)) {
+        if (bgConfig && typeof bgConfig.image === 'string' && bgConfig.image.startsWith('data:image/')) {
+          const filePath = saveBase64Image(bgConfig.image, `bg_${key}`);
+          if (filePath) {
+            updatedBackgrounds[key] = { ...bgConfig, image: filePath };
+          }
+        }
+      }
+
+      const payload = {
+        images: updatedImages,
+        backgrounds: updatedBackgrounds,
+        fits,
+        lastSaved: new Date().toISOString()
+      };
+
+      const publicPath = path.join(process.cwd(), 'public', 'saved-media.json');
+      const srcPath = path.join(process.cwd(), 'src', 'data', 'savedMedia.json');
+
+      fs.writeFileSync(publicPath, JSON.stringify(payload, null, 2), 'utf-8');
+      fs.writeFileSync(srcPath, JSON.stringify(payload, null, 2), 'utf-8');
+
+      console.log(`[Media Sync] Guardado exitoso: ${Object.keys(updatedImages).length} imágenes persistidas en disco.`);
+
+      return res.json({
+        success: true,
+        message: '¡Imágenes y fondos guardados permanentemente en los archivos del proyecto!',
+        images: updatedImages,
+        backgrounds: updatedBackgrounds,
+        fits
+      });
+    } catch (err: any) {
+      console.error('Error guardando media en disco:', err);
+      return res.status(500).json({ success: false, error: err?.message || 'Error al guardar archivos en disco' });
+    }
+  });
 
   // Health check endpoint
   app.get('/api/health', (_req, res) => {
